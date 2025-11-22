@@ -33,7 +33,20 @@ function init() {
     controls.minPolarAngle = -Math.PI / 2;
     controls.minAzimuthAngle = 0;
     controls.maxAzimuthAngle = 0;
-    controls.enablePan = false;
+    controls.enablePan = true;
+    controls.panSpeed = 0.3;
+    controls.screenSpacePanning = false;
+    
+    // pan 범위 제한
+    const maxPanDistance = 150;
+    const initialCameraX = camera.position.x;
+    
+    controls.addEventListener('change', () => {
+        const currentX = camera.position.x;
+        if (Math.abs(currentX - initialCameraX) > maxPanDistance) {
+            camera.position.x = initialCameraX + Math.sign(currentX - initialCameraX) * maxPanDistance;
+        }
+    });
 
     // 슬라이더 설정
     segmentsSlider = document.getElementById('segments');
