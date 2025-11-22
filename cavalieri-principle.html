@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Cavalieri의 원리를 활용해 구의 부피 구하기</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            justify-content: flex-start;
+            padding: 2rem;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 200;
+            color: #0a0a0a;
+            margin-bottom: 2rem;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+            background-color: #ffffff;
+            border: 1px solid #d8d8d8;
+            color: #1a1a1a;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .back-button:hover {
+            background-color: #fafafa;
+            border-color: #a0a0a0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content {
+            display: flex;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        #scene-container {
+            width: 600px;
+            height: 400px;
+            max-width: 90vw;
+            max-height: 60vh;
+            background-color: #ffffff;
+            border: 1px solid #d8d8d8;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #scene-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #controls {
+            position: absolute;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #question-container {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        #question-container p {
+            font-size: 1.1rem;
+            color: #1a1a1a;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+        }
+
+        #slider-panel {
+            writing-mode: bt-lr;
+            transform: rotate(-90deg);
+            height: 400px;
+            width: 400px;
+        }
+
+        input[type="range"] {
+            cursor: pointer;
+            height: 8px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #2a2a2a;
+            border-radius: 50%;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            background: #2a2a2a;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .thinking-problems {
+            max-width: 1400px;
+            width: 100%;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid #d8d8d8;
+        }
+
+        .thinking-problems h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #0a0a0a;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            text-align: center;
+        }
+
+        .problems-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .problem-item {
+            font-size: 1.05rem;
+            color: #1a1a1a;
+            font-weight: 300;
+            line-height: 1.8;
+            padding: 1rem;
+            background-color: #fafafa;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+        }
+
+        .problem-item .highlight {
+            font-weight: 500;
+            color: #2a2a2a;
+            background-color: #f0f0f0;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+
+        /* 반응형 디자인 */
+        @media only screen and (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .center-content {
+                width: 100%;
+            }
+
+            #controls {
+                position: static;
+                transform: none;
+                flex-direction: row;
+                gap: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            #controls label {
+                margin-bottom: 0;
+                margin-right: 1rem;
+            }
+
+            #slider-panel {
+                transform: none;
+                writing-mode: initial;
+                height: auto;
+                width: 250px;
+            }
+
+            #scene-container {
+                width: 100%;
+                max-width: 600px;
+                height: 400px;
+            }
+        }
+
+        @media only screen and (max-width: 768px) {
+            .page-title {
+                font-size: 1.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            #slider-panel {
+                width: 200px;
+            }
+
+            .main-content {
+                gap: 1rem;
+            }
+
+            #scene-container {
+                width: 100%;
+                max-width: 500px;
+                height: 350px;
+            }
+        }
+
+        @media only screen and (max-width: 480px) {
+            #slider-panel {
+                width: 150px;
+            }
+
+            #scene-container {
+                width: 100%;
+                max-width: 100%;
+                height: 300px;
+            }
+
+            .thinking-problems {
+                margin-top: 3rem;
+                padding-top: 2rem;
+            }
+
+            .thinking-problems h2 {
+                font-size: 1.25rem;
+            }
+
+            .problem-item {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .page-title {
+                color: #f0f0f0;
+            }
+
+            #scene-container {
+                background-color: #252525;
+                border-color: #3a3a3a;
+            }
+
+            label {
+                color: #e8e8e8;
+            }
+
+            #question-container p {
+                color: #e8e8e8;
+            }
+
+            .back-button {
+                background-color: #252525;
+                border-color: #3a3a3a;
+                color: #e8e8e8;
+            }
+
+            .back-button:hover {
+                background-color: #2a2a2a;
+                border-color: #4a4a4a;
+            }
+
+            .thinking-problems {
+                border-top-color: #3a3a3a;
+            }
+
+            .thinking-problems h2 {
+                color: #f0f0f0;
+            }
+
+            .problem-item {
+                background-color: #252525;
+                border-color: #3a3a3a;
+                color: #e8e8e8;
+            }
+
+            .problem-item .highlight {
+                color: #f0f0f0;
+                background-color: #2a2a2a;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1 class="page-title">
+            <a href="index.html" class="back-button">← 돌아가기</a>
+            Cavalieri의 원리를 활용해 구의 부피 구하기
+        </h1>
+        
+        <div class="main-content">
+            <div id="controls">
+                <label for="slider-panel">입체도형을 자르는 평면 움직이기</label>
+                <input type="range" id="slider-panel" min="0" max="100" value="0" step="0.001">
+            </div>
+
+            <div class="center-content">
+                <div id="question-container">
+                    <p>구의 부피는 왜 <span class="tex">\(\frac{4}{3}\pi r^{3}\)</span> 일까?</p>
+                </div>
+
+                <div id="scene-container"></div>
+            </div>
+        </div>
+
+        <div class="thinking-problems">
+            <h2>생각해 볼 문제</h2>
+            <div class="problems-list">
+                <div class="problem-item">
+                    1. 높이가 <span class="tex">\(h\)</span>일 때, 평면에 잘린 <span class="highlight">반구 단면</span>의 넓이는?
+                </div>
+                <div class="problem-item">
+                    2. 높이가 <span class="tex">\(h\)</span>일 때, 평면에 잘린 <span class="highlight">원기둥 단면</span>의 넓이는?
+                </div>
+                <div class="problem-item">
+                    3. 높이가 <span class="tex">\(h\)</span>일 때, 평면에 잘린 <span class="highlight">원뿔 단면</span>의 넓이는?
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>Made by Hyowon Wang</p>
+        </div>
+    </footer>
+
+    <script type="module" src="./src/cavalieri-principle.js"></script>
+</body>
+</html>
+
