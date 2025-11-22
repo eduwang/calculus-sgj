@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Archimedes의 평형법으로 구의 부피 구하기</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <style>
+        body {
+            justify-content: flex-start;
+            padding: 2rem;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 200;
+            color: #0a0a0a;
+            margin-bottom: 2rem;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+            background-color: #ffffff;
+            border: 1px solid #d8d8d8;
+            color: #1a1a1a;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .back-button:hover {
+            background-color: #fafafa;
+            border-color: #a0a0a0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            width: 100%;
+            gap: 2rem;
+        }
+
+        #scene-container {
+            width: 800px;
+            height: 600px;
+            max-width: 95vw;
+            max-height: 70vh;
+            background-color: #ffffff;
+            border: 1px solid #d8d8d8;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #scene-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .step-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .step-button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 400;
+            background-color: #ffffff;
+            border: 1px solid #d8d8d8;
+            color: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+        }
+
+        .step-button:hover {
+            background-color: #fafafa;
+            border-color: #a0a0a0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-button.active {
+            background-color: #2a2a2a;
+            color: #ffffff;
+            border-color: #2a2a2a;
+        }
+
+        .formula-panel {
+            text-align: center;
+            padding: 1rem;
+            background-color: #fafafa;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            min-height: 100px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .formula-panel p {
+            font-size: 1.1rem;
+            color: #1a1a1a;
+            font-weight: 300;
+            margin: 0.5rem 0;
+            line-height: 1.8;
+        }
+
+        .formula-panel .tex {
+            font-size: 1.2rem;
+        }
+
+        /* 반응형 디자인 */
+        @media only screen and (max-width: 1024px) {
+            #scene-container {
+                width: 100%;
+                max-width: 800px;
+                height: 500px;
+            }
+        }
+
+        @media only screen and (max-width: 768px) {
+            .page-title {
+                font-size: 1.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            #scene-container {
+                width: 100%;
+                max-width: 600px;
+                height: 450px;
+            }
+        }
+
+        @media only screen and (max-width: 480px) {
+            #scene-container {
+                width: 100%;
+                max-width: 100%;
+                height: 400px;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .page-title {
+                color: #f0f0f0;
+            }
+
+            #scene-container {
+                background-color: #252525;
+                border-color: #3a3a3a;
+            }
+
+            .back-button {
+                background-color: #252525;
+                border-color: #3a3a3a;
+                color: #e8e8e8;
+            }
+
+            .back-button:hover {
+                background-color: #2a2a2a;
+                border-color: #4a4a4a;
+            }
+
+            .formula-panel {
+                background-color: #252525;
+                border-color: #3a3a3a;
+            }
+
+            .formula-panel p {
+                color: #e8e8e8;
+            }
+
+            .step-button {
+                background-color: #252525;
+                border-color: #3a3a3a;
+                color: #e8e8e8;
+            }
+
+            .step-button:hover {
+                background-color: #2a2a2a;
+                border-color: #4a4a4a;
+            }
+
+            .step-button.active {
+                background-color: #4a4a4a;
+                color: #ffffff;
+            }
+        }
+    </style>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="page-container">
+        <h1 class="page-title">
+            <a href="index.html" class="back-button">← 돌아가기</a>
+            Archimedes의 평형법으로 구의 부피 구하기
+        </h1>
+        
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="step-buttons">
+                    <button class="step-button" id="step1-btn">1단계: 원의 방정식에서 출발</button>
+                    <button class="step-button" id="step2-btn">2단계: 원뿔, 구, 원기둥 그리기</button>
+                    <button class="step-button" id="step3-btn">3단계: 평형법 적용</button>
+                </div>
+                <div class="formula-panel" id="formula-panel">
+                    <div id="formula-step1" class="formula-content" style="display: none;">
+                        <p><span class="tex">\((x-r)^2+y^2=r^2\)</span></p>
+                        <p>정리하면, <span class="tex">\(x^2+y^2=2rx\)</span></p>
+                        <p>양변에 <span class="tex">\(\pi\)</span> 곱하면, <span class="tex">\(\pi x^2+\pi y^2=\pi \cdot 2rx\)</span></p>
+                        <p>양변에 <span class="tex">\(2r\)</span> 곱하면, <span class="tex">\(2r(\pi x^2+\pi y^2)=x\pi(2r)^2\)</span></p>
+                    </div>
+                    <div id="formula-step2" class="formula-content" style="display: none;">
+                        <p>밑면의 반지름과 높이가 <span class="tex">\(2r\)</span>인 원뿔, <br> 반지름이 <span class="tex">\(r\)</span>인 구, <br> 밑면의 반지름과 높이가 <span class="tex">\(2r\)</span>인 원기둥을 그립니다.</p>
+                        <p>이전의 식 <span class="tex">\(2r(\pi x^2+\pi y^2)=x\pi(2r)^2\)</span>에서 <br><span class="tex">\(x\)</span>가 0부터 <span class="tex">\(2r\)</span>까지 변하면, <br> <span class="tex">\(\pi x^2\)</span>은 원뿔, <span class="tex">\(\pi y^2\)</span>은 구가 됩니다.</p>
+                    </div>
+                    <div id="formula-step3" class="formula-content" style="display: none;">
+                        <p>그러므로,</p>
+                        <p><span class="tex">\(2r\left\{\frac{1}{3}\pi(2r)^2 2r+V\right\}=r\left\{\pi(2r)^2 \cdot 2r\right\}\)</span></p>
+                        <p><span class="tex">\([2r\)</span>의 위치<span class="tex">\(] \times [\)</span>원뿔의 부피<span class="tex">\(+\)</span>구의 부피<span class="tex">\(] = [r\)</span>의 위치<span class="tex">\(] \times [\)</span>원기둥의 부피<span class="tex">\(]\)</span></p>
+                    </div>
+                </div>
+            </div>
+            <div id="scene-container"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>Made by Hyowon Wang</p>
+        </div>
+    </footer>
+
+    <script type="module" src="./src/archimedes-equilibrium.js"></script>
+</body>
+</html>
+
