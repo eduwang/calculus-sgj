@@ -16,6 +16,7 @@
             width: 100%;
             position: relative;
             z-index: 1;
+            min-height: calc(100vh - 200px);
         }
 
         .page-title {
@@ -26,27 +27,62 @@
             letter-spacing: -0.03em;
             line-height: 1.2;
             text-align: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+            background-color: #ffffff;
+            border: 1px solid #d8d8d8;
+            color: #1a1a1a;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .back-button:hover {
+            background-color: #fafafa;
+            border-color: #a0a0a0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .main-content {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            grid-template-rows: auto 1fr auto;
+            display: flex;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            width: 100%;
+        }
+
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 2rem;
-            min-height: 600px;
+            flex: 0 0 auto;
         }
 
         #scene-container {
-            grid-column: 2;
-            grid-row: 2;
-            width: 100%;
-            height: 100%;
-            min-height: 500px;
+            width: 600px;
+            height: 400px;
+            max-width: 90vw;
+            max-height: 60vh;
             background-color: #ffffff;
             border: 1px solid #d8d8d8;
             border-radius: 4px;
             position: relative;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         #scene-container canvas {
@@ -56,8 +92,6 @@
         }
 
         #buttons {
-            grid-column: 2;
-            grid-row: 1;
             display: flex;
             gap: 10px;
             justify-content: center;
@@ -65,8 +99,10 @@
         }
 
         #controls {
-            grid-column: 1;
-            grid-row: 2;
+            position: absolute;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -74,8 +110,6 @@
         }
 
         #offsetSliderContainer {
-            grid-column: 2;
-            grid-row: 3;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -117,35 +151,55 @@
         #segments {
             writing-mode: bt-lr;
             transform: rotate(-90deg);
-            height: 300px;
-            width: 300px;
+            height: 400px;
+            width: 400px;
         }
 
         #offset {
-            width: 400px;
+            width: 500px;
         }
 
         input[type="range"] {
             cursor: pointer;
+            height: 8px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #2a2a2a;
+            border-radius: 50%;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            background: #2a2a2a;
+            border-radius: 50%;
+            border: none;
         }
 
         /* 반응형 디자인 */
         @media only screen and (max-width: 1024px) {
             .main-content {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto;
+                flex-direction: column;
+                gap: 2rem;
             }
 
-            #buttons {
-                grid-column: 1;
-                grid-row: 1;
+            .center-content {
+                width: 100%;
             }
 
             #controls {
-                grid-column: 1;
-                grid-row: 2;
+                position: static;
+                transform: none;
                 flex-direction: row;
                 gap: 2rem;
+                margin-bottom: 1rem;
             }
 
             #controls label {
@@ -157,17 +211,17 @@
                 transform: none;
                 writing-mode: initial;
                 height: auto;
-                width: 200px;
+                width: 250px;
             }
 
             #scene-container {
-                grid-column: 1;
-                grid-row: 3;
+                width: 100%;
+                max-width: 600px;
+                height: 400px;
             }
 
-            #offsetSliderContainer {
-                grid-column: 1;
-                grid-row: 4;
+            #offset {
+                width: 350px;
             }
         }
 
@@ -178,15 +232,21 @@
             }
 
             #segments {
-                width: 150px;
+                width: 200px;
             }
 
             #offset {
-                width: 250px;
+                width: 280px;
             }
 
             .main-content {
                 gap: 1rem;
+            }
+
+            #scene-container {
+                width: 100%;
+                max-width: 500px;
+                height: 350px;
             }
         }
 
@@ -198,6 +258,12 @@
             button {
                 padding: 0.6rem 1rem;
                 font-size: 0.9rem;
+            }
+
+            #scene-container {
+                width: 100%;
+                max-width: 100%;
+                height: 300px;
             }
         }
 
@@ -214,33 +280,55 @@
             label {
                 color: #e8e8e8;
             }
+
+            .back-button {
+                background-color: #252525;
+                border-color: #3a3a3a;
+                color: #e8e8e8;
+            }
+
+            .back-button:hover {
+                background-color: #2a2a2a;
+                border-color: #4a4a4a;
+            }
         }
     </style>
 </head>
 <body>
     <div class="page-container">
-        <h1 class="page-title">Cavalieri의 불가분량법</h1>
+        <h1 class="page-title">
+            <a href="index.html" class="back-button">← 돌아가기</a>
+            Cavalieri의 불가분량법
+        </h1>
         
         <div class="main-content">
-            <div id="buttons">
-                <button id="cuboidButton">사각기둥</button>
-                <button id="cylinderButton">원기둥</button>
-                <button id="coneButton">원뿔</button>
-            </div>
-
             <div id="controls">
                 <label for="segments">조각 수</label>
                 <input type="range" id="segments" min="1" max="200" value="1">
             </div>
 
-            <div id="scene-container"></div>
+            <div class="center-content">
+                <div id="buttons">
+                    <button id="cuboidButton">사각기둥</button>
+                    <button id="cylinderButton">원기둥</button>
+                    <button id="coneButton">원뿔</button>
+                </div>
 
-            <div id="offsetSliderContainer">
-                <label for="offset">옆으로 밀기</label>
-                <input type="range" id="offset" min="-100" max="100" value="0">
+                <div id="scene-container"></div>
+
+                <div id="offsetSliderContainer">
+                    <label for="offset">옆으로 밀기</label>
+                    <input type="range" id="offset" min="-100" max="100" value="0">
+                </div>
             </div>
         </div>
     </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>Made by Hyowon Wang</p>
+        </div>
+    </footer>
 
     <script type="module" src="./src/cavalieri_method-of-indivisibles.js"></script>
 </body>

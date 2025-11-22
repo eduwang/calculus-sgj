@@ -56,7 +56,7 @@ function init() {
     // GLTF 모델 로드
     const loader = new GLTFLoader();
     loader.load(
-        './src/3dmodels/cavalieri_new.gltf',
+        '/3dmodels/cavalieri_new.gltf',
         function (gltf) {
             const model = gltf.scene;
             model.scale.set(0.8, 0.8, 0.8);

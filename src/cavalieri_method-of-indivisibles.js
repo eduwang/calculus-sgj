@@ -15,11 +15,15 @@ const coneButton = document.getElementById('coneButton');
 
 function init() {
     // Scene, Camera, Renderer 설정
+    const sceneContainer = document.getElementById('scene-container');
+    const containerWidth = sceneContainer.clientWidth;
+    const containerHeight = sceneContainer.clientHeight;
+
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, containerWidth / containerHeight, 0.1, 1000);
     renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    renderer.setSize(containerWidth, containerHeight);
+    sceneContainer.appendChild(renderer.domElement);
 
     // OrbitControls 설정
     controls = new OrbitControls(camera, renderer.domElement);
@@ -182,9 +186,13 @@ function animate() {
 }
 
 function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const sceneContainer = document.getElementById('scene-container');
+    const containerWidth = sceneContainer.clientWidth;
+    const containerHeight = sceneContainer.clientHeight;
+    
+    camera.aspect = containerWidth / containerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(containerWidth, containerHeight);
 }
 
 window.addEventListener('resize', onWindowResize, false);
