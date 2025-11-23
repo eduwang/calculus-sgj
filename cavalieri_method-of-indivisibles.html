@@ -8,6 +8,8 @@
         body {
             justify-content: flex-start;
             padding: 2rem;
+            background-color: #ffffff;
+            color: #1a1a1a;
         }
 
         .page-container {
@@ -267,6 +269,11 @@
         }
 
         @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e8e8e8;
+            }
+
             .page-title {
                 color: #f0f0f0;
             }
@@ -280,6 +287,23 @@
                 color: #e8e8e8;
             }
 
+            button {
+                background-color: #252525;
+                border-color: #3a3a3a;
+                color: #e8e8e8;
+            }
+
+            button:hover {
+                background-color: #2a2a2a;
+                border-color: #4a4a4a;
+            }
+
+            button.active {
+                background-color: #4a4a4a;
+                color: #ffffff;
+                border-color: #4a4a4a;
+            }
+
             .back-button {
                 background-color: #252525;
                 border-color: #3a3a3a;
@@ -289,6 +313,14 @@
             .back-button:hover {
                 background-color: #2a2a2a;
                 border-color: #4a4a4a;
+            }
+
+            footer {
+                border-top-color: #3a3a3a;
+            }
+
+            .footer-content {
+                color: #8a8a8a;
             }
         }
     </style>
